@@ -1,14 +1,15 @@
 import numpy as np
 import os
 import cv2 as cv
+import yaml
 from os.path import join
 from argparse import ArgumentParser
 
-def main(args):
+def main(params):
     data_dir = 'data/preprocessed'
     gt_files = os.listdir(join(data_dir, 'gt'))
 
-    min_cloud_ratio = args.min_cloud_ratio
+    min_cloud_ratio = params['min_cloud_ratio']
     dataset = []
     for file in gt_files:
         gt = cv.imread(join(data_dir, 'gt', file), cv.IMREAD_GRAYSCALE)
@@ -20,7 +21,7 @@ def main(args):
 
 
 if __name__=='__main__':
-    parser = ArgumentParser()
-    parser.add_argument('--min_cloud_ratio', type=int, default=0.05)
-    args = parser.parse_args()
-    main(args)
+    with open('params.yaml', 'r') as f:
+        params = yaml.safe_load(f)
+
+    main(params['preprocessing'])

@@ -1,0 +1,4 @@
+preprocessing:
+  patch_height: 128
+  patch_width: 128
+  min_cloud_ratio: 0.05
