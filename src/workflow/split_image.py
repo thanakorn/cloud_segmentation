@@ -1,9 +1,12 @@
 import os
 import cv2 as cv
 import random
+import numpy as np
 from preprocessing.image_splitter import ImageSplitter
 from os.path import join
 from argparse import ArgumentParser
+
+random.seed(42)
 
 def main(args):
     img_dir = 'data/images'
@@ -19,6 +22,7 @@ def main(args):
     for file in img_files:
         img = cv.imread(join(img_dir, file))
         gt = cv.imread(join(gt_dir, '%s_GT.jpg' % file.split('.')[0]), cv.IMREAD_GRAYSCALE)
+        gt = (gt > 127).astype(int)
         img_patches = ImageSplitter.split_image(img, patch_height, patch_width)
         gt_patches = ImageSplitter.split_image(gt, patch_height, patch_width)
 
