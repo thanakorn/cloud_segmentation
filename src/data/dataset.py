@@ -16,4 +16,5 @@ class CloudDataset(Dataset):
         img_id = self.img_list[index]
         img = cv.cvtColor(cv.imread(join(self.img_dir, '%s.jpg' % img_id)), cv.COLOR_BGR2RGB).transpose(2,0,1)
         gt = cv.imread(join(self.gt_dir, '%s_gt.jpg' % img_id), cv.IMREAD_GRAYSCALE)
+        gt = (gt > 0).astype(int)
         return torch.tensor(img).float(), torch.tensor(gt).float()

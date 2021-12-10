@@ -4,3 +4,5 @@ matplotlib
 torch
 pyyaml
 pytorch-lightning
+scikit-learn
+seaborn
