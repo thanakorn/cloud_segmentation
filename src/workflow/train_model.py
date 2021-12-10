@@ -1,6 +1,7 @@
 import torch
-from torch.nn.modules.loss import BCEWithLogitsLoss
 import yaml
+import matplotlib.pyplot as plt
+from torch.nn.modules.loss import BCEWithLogitsLoss
 from math import ceil
 from model.unet import UNet
 from model.segmentation_module import SegmentationModule
@@ -8,6 +9,7 @@ from data.dataset import CloudDataset
 from torch.utils.data import random_split, DataLoader
 from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import CSVLogger
+from torch.nn.functional import sigmoid
 
 torch.random.manual_seed(10)
 
@@ -16,26 +18,19 @@ def get_optimizer(optimizer: str):
     return getattr(module, optimizer)
 
 def main(model_params, training_params):
-
-    val_ratio = training_params['val_ratio']
-    test_ratio = training_params['test_ratio']
     batch_size = training_params['batch_size']
     optimizer = training_params['optimizer']
     epochs = training_params['n_epochs']
 
-    with open('data/preprocessed/dataset.txt') as f:
-        img_list = [img_id.strip() for img_id in f.readlines()]
+    with open('data/preprocessed/train.txt') as f1, open('data/preprocessed/val.txt') as f2:
+        train_list = [img_id.strip() for img_id in f1.readlines()]
+        val_list = [img_id.strip() for img_id in f2.readlines()]
 
-    dataset = CloudDataset('data/preprocessed/img', 'data/preprocessed/gt', img_list)
-    train, val, test = random_split(dataset, [
-        ceil((1.0 - (val_ratio + test_ratio)) * len(dataset)), 
-        int(val_ratio * len(dataset)),
-        int(test_ratio * len(dataset)),
-    ])
+    train = CloudDataset('data/preprocessed/img', 'data/preprocessed/gt', train_list)
+    val = CloudDataset('data/preprocessed/img', 'data/preprocessed/gt', val_list)
     
     train_loader = DataLoader(train, batch_size=batch_size)
-    val_loader = DataLoader(val, batch_size=batch_size)
-    test_loader = DataLoader(test, batch_size=batch_size)
+    val_loader = DataLoader(val, batch_size=batch_size, drop_last=True)
 
     model = UNet(
         n_classes=model_params['n_classes'],
@@ -50,10 +45,25 @@ def main(model_params, training_params):
         check_val_every_n_epoch=1,
         logger=logger
     )
-
     trainer.fit(model=module, train_dataloader=train_loader, val_dataloaders=val_loader)
-    trainer.test(module, test_loader)
     torch.save(model.state_dict(), 'model/model.pth')
+
+    # Generate sample results
+    model.eval()
+    iterator = iter(val_loader)
+    next(iterator)
+    x, y = next(iterator)
+    sample_outs = sigmoid(model(x))
+    sample_outs = (sample_outs.detach().numpy() > 0.5).astype(int)
+    _, axes = plt.subplots(nrows=5, ncols=3, figsize=(10,10))
+    for i, ax in enumerate(axes):
+        ax[0].imshow(x[i].detach().numpy().astype(int).transpose(1,2,0))
+        ax[0].set_axis_off()
+        ax[1].imshow(y[i].detach().numpy().astype(int), cmap='binary', vmin=0., vmax=1.)
+        ax[1].set_axis_off()
+        ax[2].imshow(sample_outs[i], cmap='binary', vmin=0., vmax=1.)
+        ax[2].set_axis_off()
+    plt.savefig('figures/sample_output.jpg', bbox_inches='tight')
 
 if __name__=='__main__':
     with open('params.yaml', 'r') as f:

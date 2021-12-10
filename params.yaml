@@ -2,15 +2,15 @@ preprocessing:
   patch_height: 128
   patch_width: 128
   min_cloud_ratio: 0.05
+  val_ratio: 0.1
+  test_ratio: 0.2
 
 model:
   n_classes: 1
   in_channels: 3
 
 training:
-  val_ratio: 0.1
-  test_ratio: 0.2
   batch_size: 16
-  n_epochs: 1
+  n_epochs: 10
   optimizer: Adam
   lr: 0.001
