@@ -3,3 +3,4 @@ opencv-python
 matplotlib
 torch
 pyyaml
+pytorch-lightning
