@@ -1,0 +1,26 @@
+schema: '2.0'
+stages:
+  split_image:
+    cmd: python src/workflow/split_image.py
+    deps:
+    - path: data/gt
+      md5: 5fc404cd009d1089b32cd1bea587ea39.dir
+      size: 479948
+      nfiles: 32
+    - path: data/images
+      md5: dbdc23d29d9f073c4b5bf78182c2bfed.dir
+      size: 509816
+      nfiles: 32
+    params:
+      params.yaml:
+        preprocessing.patch_height: 128
+        preprocessing.patch_width: 128
+    outs:
+    - path: data/preprocessed/gt
+      md5: 09812c30f4c11efb545d16464f4e9fe7.dir
+      size: 242072
+      nfiles: 425
+    - path: data/preprocessed/img
+      md5: 0d4c59cfb54921c3b16db2af0da62b7e.dir
+      size: 900764
+      nfiles: 425
