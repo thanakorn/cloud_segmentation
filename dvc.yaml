@@ -2,10 +2,10 @@ stages:
   split_image:
     cmd: python src/workflow/split_image.py
     deps:
+    - src/workflow/split_image.py
     - data/gt
     - data/images
     params:
-    - src/workflow/split_image.py
     - preprocessing.patch_height
     - preprocessing.patch_width
     outs:
