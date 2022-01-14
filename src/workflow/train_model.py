@@ -1,6 +1,7 @@
 import torch
 import yaml
 import matplotlib.pyplot as plt
+import os
 from torch.nn.modules.loss import BCEWithLogitsLoss
 from math import ceil
 from model.unet import UNet
@@ -63,6 +64,8 @@ def main(model_params, training_params):
         ax[1].set_axis_off()
         ax[2].imshow(sample_outs[i], cmap='binary', vmin=0., vmax=1.)
         ax[2].set_axis_off()
+
+    os.makedirs('figures', exist_ok=True)
     plt.savefig('figures/sample_output.jpg', bbox_inches='tight')
 
 if __name__=='__main__':
