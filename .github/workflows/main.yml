@@ -45,7 +45,9 @@ jobs:
 
       - name: Generate report content
         id: get-comment-body
-        run: body="$(cat diff.txt)"
+        run: | 
+          body="$(cat diff.txt)"
+          echo "::set-output name=body::$body"
 
       - name: Create report comment
         uses: peter-evans/create-or-update-comment@v1
