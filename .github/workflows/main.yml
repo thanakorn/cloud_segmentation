@@ -51,5 +51,6 @@ jobs:
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: 1
-          body: ${{ steps.get-comment-body.outputs.body }}
+          body: |
+            ${{ steps.get-comment-body.outputs.body }}
             
