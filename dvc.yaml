@@ -1,0 +1,46 @@
+stages:
+  split_image:
+    cmd: python src/workflow/split_image.py
+    deps:
+    - src/workflow/split_image.py
+    - data/gt
+    - data/images
+    params:
+    - preprocessing.patch_height
+    - preprocessing.patch_width
+    outs:
+    - data/preprocessed/gt
+    - data/preprocessed/img
+  select_image:
+    cmd: python src/workflow/select_image.py
+    deps:
+    - src/workflow/select_image.py
+    - data/preprocessed/img
+    - data/preprocessed/gt
+    params:
+    - preprocessing.min_cloud_ratio
+    - preprocessing.val_ratio
+    - preprocessing.test_ratio
+    outs:
+    - data/preprocessed/train.txt
+    - data/preprocessed/val.txt
+    - data/preprocessed/test.txt
+  train_model:
+    cmd: python src/workflow/train_model.py
+    deps:
+    - src/workflow/train_model.py
+    - data/preprocessed/train.txt
+    - data/preprocessed/val.txt
+    params:
+    - model
+    - training
+    outs:
+    - model/model.pth
+  eval:
+    cmd: python src/workflow/eval.py
+    deps:
+    - src/workflow/eval.py
+    - model/model.pth
+    - data/preprocessed/test.txt
+    outs:
+    - model/performance.json

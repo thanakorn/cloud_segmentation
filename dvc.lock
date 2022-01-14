@@ -1,0 +1,88 @@
+schema: '2.0'
+stages:
+  split_image:
+    cmd: python src/workflow/split_image.py
+    deps:
+    - path: data/gt
+      md5: 5fc404cd009d1089b32cd1bea587ea39.dir
+      size: 479948
+      nfiles: 32
+    - path: data/images
+      md5: dbdc23d29d9f073c4b5bf78182c2bfed.dir
+      size: 509816
+      nfiles: 32
+    params:
+      params.yaml:
+        preprocessing.patch_height: 128
+        preprocessing.patch_width: 128
+    outs:
+    - path: data/preprocessed/gt
+      md5: 09812c30f4c11efb545d16464f4e9fe7.dir
+      size: 242072
+      nfiles: 425
+    - path: data/preprocessed/img
+      md5: 0d4c59cfb54921c3b16db2af0da62b7e.dir
+      size: 900764
+      nfiles: 425
+  select_image:
+    cmd: python src/workflow/select_image.py
+    deps:
+    - path: data/preprocessed/gt
+      md5: 09812c30f4c11efb545d16464f4e9fe7.dir
+      size: 242072
+      nfiles: 425
+    - path: data/preprocessed/img
+      md5: 0d4c59cfb54921c3b16db2af0da62b7e.dir
+      size: 900764
+      nfiles: 425
+    params:
+      params.yaml:
+        preprocessing.min_cloud_ratio: 0.05
+        preprocessing.test_ratio: 0.2
+        preprocessing.val_ratio: 0.1
+    outs:
+    - path: data/preprocessed/test.txt
+      md5: 6ab3197731099a74c9beb094a896686e
+      size: 337
+    - path: data/preprocessed/train.txt
+      md5: 660a803448e2895cd588dce091d4e6ba
+      size: 1196
+    - path: data/preprocessed/val.txt
+      md5: 7d68f6d29f2a0723979c352a83276e67
+      size: 161
+  train_model:
+    cmd: python src/workflow/train_model.py
+    deps:
+    - path: data/preprocessed/train.txt
+      md5: 660a803448e2895cd588dce091d4e6ba
+      size: 1196
+    - path: data/preprocessed/val.txt
+      md5: 7d68f6d29f2a0723979c352a83276e67
+      size: 161
+    params:
+      params.yaml:
+        model:
+          n_classes: 1
+          in_channels: 3
+        training:
+          batch_size: 16
+          n_epochs: 10
+          optimizer: Adam
+          lr: 0.001
+    outs:
+    - path: model/model.pth
+      md5: 99107b9bc8a1b4d0b1533cb726a5453b
+      size: 69147905
+  eval:
+    cmd: python src/workflow/eval.py
+    deps:
+    - path: data/preprocessed/test.txt
+      md5: 6ab3197731099a74c9beb094a896686e
+      size: 337
+    - path: model/model.pth
+      md5: 99107b9bc8a1b4d0b1533cb726a5453b
+      size: 69147905
+    outs:
+    - path: model/performance.json
+      md5: f4a5b502cc166633b7e18f2c37be563c
+      size: 140
