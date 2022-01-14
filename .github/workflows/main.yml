@@ -35,3 +35,6 @@ jobs:
         
       - name: Reproduce experiment
         run: dvc repro
+
+      - name: Compare metrics with main
+        run: dvc metrics diff main
