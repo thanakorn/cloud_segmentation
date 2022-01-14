@@ -44,7 +44,7 @@ jobs:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: |
           report="$(dvc metrics diff main)"
-          echo -e $report
+          echo -e "$report"
           echo -e "::set-output name=body::$report"
 
       - name: Create report comment
