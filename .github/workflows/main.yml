@@ -43,10 +43,11 @@ jobs:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: dvc metrics diff main 2>&1 | tee diff.txt
 
-      - id: get-comment-body
-        run: body="${cat diff.txt}"
+      - name: Generate report content
+        id: get-comment-body
+        run: body="$(cat diff.txt)"
 
-      - name: Report metrics
+      - name: Create report comment
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: 1
