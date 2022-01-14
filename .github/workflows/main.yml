@@ -27,9 +27,10 @@ jobs:
           pip install dvc[gdrive]
         
       
-      - name: Reproduce experiment
+      - name: Load data
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-        run: |
-          dvc pull
-          dvc repro
+        run: dvc pull
+        
+      - name: Reproduce experiment
+        run: dvc repro
