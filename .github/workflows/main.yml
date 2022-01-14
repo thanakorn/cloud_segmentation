@@ -39,22 +39,18 @@ jobs:
         run: dvc repro
 
       - name: Verify performance
+        id: verify
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: |
-          dvc metrics diff main --md --no-path 2>&1 | tee diff.txt
-          cat diff.txt
-
-      - name: Generate report content
-        id: get-comment-body
-        run: | 
-          body="$(cat diff.txt)"
-          echo "::set-output name=body::$body"
+          report="$(dvc metrics diff main --no-path)"
+          echo $report
+          echo "::set-output name=body::$report"
 
       - name: Create report comment
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.get-comment-body.outputs.body }}
+            ${{ steps.verify.outputs.body }}
             
