@@ -41,7 +41,9 @@ jobs:
       - name: Verify performance
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-        run: dvc metrics diff main 2>&1 | tee diff.txt
+        run: |
+          dvc metrics diff main 2>&1 | tee diff.txt
+          cat diff.txt
 
       - name: Generate report content
         id: get-comment-body
@@ -52,7 +54,7 @@ jobs:
       - name: Create report comment
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: 1
+          issue-number: ${{ github.event.pull_request.number }}
           body: |
             ${{ steps.get-comment-body.outputs.body }}
             
