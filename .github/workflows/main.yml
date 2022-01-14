@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          python src/setup.py develop
           pip install dvc[gdrive]
-        
       
       - name: Load data
         env:
