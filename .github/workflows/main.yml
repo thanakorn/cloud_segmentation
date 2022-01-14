@@ -36,5 +36,5 @@ jobs:
       - name: Reproduce experiment
         run: dvc repro
 
-      - name: Compare metrics with main
+      - name: Verify performance
         run: dvc metrics diff main
