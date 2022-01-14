@@ -11,6 +11,9 @@ stages:
       md5: dbdc23d29d9f073c4b5bf78182c2bfed.dir
       size: 509816
       nfiles: 32
+    - path: src/workflow/split_image.py
+      md5: 544742599af6d945b5f3d8df68f8bb9a
+      size: 1440
     params:
       params.yaml:
         preprocessing.patch_height: 128
@@ -35,6 +38,9 @@ stages:
       md5: 0d4c59cfb54921c3b16db2af0da62b7e.dir
       size: 900764
       nfiles: 425
+    - path: src/workflow/select_image.py
+      md5: 03c27abd9bdc2bc65fc264622ddc0cf7
+      size: 1322
     params:
       params.yaml:
         preprocessing.min_cloud_ratio: 0.05
@@ -59,6 +65,9 @@ stages:
     - path: data/preprocessed/val.txt
       md5: 7d68f6d29f2a0723979c352a83276e67
       size: 161
+    - path: src/workflow/train_model.py
+      md5: d4ecf7c38af981245caeebd8d28aea34
+      size: 2766
     params:
       params.yaml:
         model:
@@ -82,6 +91,9 @@ stages:
     - path: model/model.pth
       md5: 99107b9bc8a1b4d0b1533cb726a5453b
       size: 69147905
+    - path: src/workflow/eval.py
+      md5: 9fbce601b4b29d0084cc7503b81aad72
+      size: 2703
     outs:
     - path: model/performance.json
       md5: f4a5b502cc166633b7e18f2c37be563c
