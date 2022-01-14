@@ -41,4 +41,11 @@ jobs:
       - name: Verify performance
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-        run: dvc metrics diff main
+        run: dvc metrics diff main 2>&1 | tee diff.txt
+
+      - name: Report metrics
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: 1
+          body: |
+            body="$cat diff.txt"
