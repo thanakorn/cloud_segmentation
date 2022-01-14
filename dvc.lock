@@ -75,12 +75,12 @@ stages:
           in_channels: 3
         training:
           batch_size: 16
-          n_epochs: 10
+          n_epochs: 5
           optimizer: Adam
           lr: 0.001
     outs:
     - path: model/model.pth
-      md5: 99107b9bc8a1b4d0b1533cb726a5453b
+      md5: 8b4a85d9aeed296232ee5526cc858ed4
       size: 69147905
   eval:
     cmd: python src/workflow/eval.py
@@ -89,12 +89,12 @@ stages:
       md5: 6ab3197731099a74c9beb094a896686e
       size: 337
     - path: model/model.pth
-      md5: 99107b9bc8a1b4d0b1533cb726a5453b
+      md5: 8b4a85d9aeed296232ee5526cc858ed4
       size: 69147905
     - path: src/workflow/eval.py
       md5: 9fbce601b4b29d0084cc7503b81aad72
       size: 2703
     outs:
     - path: model/performance.json
-      md5: f4a5b502cc166633b7e18f2c37be563c
+      md5: 9197c02060b92fde20a7ffdb38145fd7
       size: 140

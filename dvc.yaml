@@ -42,5 +42,5 @@ stages:
     - src/workflow/eval.py
     - model/model.pth
     - data/preprocessed/test.txt
-    outs:
+    metrics:
     - model/performance.json
