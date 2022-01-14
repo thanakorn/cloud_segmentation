@@ -42,7 +42,7 @@ jobs:
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: |
-          dvc metrics diff main 2>&1 | tee diff.txt
+          dvc metrics diff main --md --no-path 2>&1 | tee diff.txt
           cat diff.txt
 
       - name: Generate report content
