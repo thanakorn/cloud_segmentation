@@ -66,8 +66,8 @@ stages:
       md5: 7d68f6d29f2a0723979c352a83276e67
       size: 161
     - path: src/workflow/train_model.py
-      md5: d4ecf7c38af981245caeebd8d28aea34
-      size: 2766
+      md5: ff3c2112dbd35588e68342d3e3b0b158
+      size: 2819
     params:
       params.yaml:
         model:
