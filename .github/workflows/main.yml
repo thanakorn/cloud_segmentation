@@ -44,7 +44,6 @@ jobs:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: |
           dvc metrics diff --show-md --no-path main 2>&1 | tee diff.txt
-          cat diff.txt
 
       - name: Generate report content
         id: get-comment-body
@@ -52,13 +51,30 @@ jobs:
           body="$(cat diff.txt)"
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
+          echo -e "$body"
           body="${body//$'\r'/'%0D'}" 
           echo "::set-output name=body::$body"
 
+      # - name: Find comment
+      #   id: fc
+      #   uses: peter-evans/find-comment@v1
+      #   with:
+      #     issue-number: ${{ github.event.pull_request.number }}
+      #     comment-author: 'github-actions[bot]'
+
       - name: Create report comment
+        # if: steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.verify.outputs.body }}
-            
+            ${{ steps.get-comment-body.outputs.body }}
+      
+      # - name: Upate report comment
+      #   if: steps.fc.outputs.comment-id == ''
+      #   uses: peter-evans/create-or-update-comment@v1
+      #   with:
+      #     issue-number: ${{ github.event.pull_request.number }}
+      #     comment-id: ${{ steps.fc.outputs.comment-id }}
+      #     body: |
+      #       ${{ steps.verify.outputs.body }}
