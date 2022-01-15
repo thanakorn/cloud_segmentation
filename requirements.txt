@@ -6,4 +6,4 @@ pyyaml
 pytorch-lightning
 scikit-learn
 seaborn
-dvc
+dvc==2.7.4
