@@ -77,3 +77,4 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
             ${{ steps.get-comment-body.outputs.body }}
+          edit-mode: replace
