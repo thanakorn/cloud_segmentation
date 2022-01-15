@@ -1,27 +1,16 @@
-name: CI
+name: Main
 
-# Controls when the workflow will run
 on:
   push:
     branches:
     - main
-  pull_request:
-    branches:
-    - main
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   reproduce:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       
       - name: Install dependencies
         run: |
@@ -29,52 +18,11 @@ jobs:
           pip install dvc[gdrive]
           cd src
           pip install .
-      
-      - name: Load data
-        env:
-          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-        run: dvc pull
-        
-      - name: Reproduce experiment
-        run: dvc repro
 
-      - name: Verify performance
-        id: verify
+      - name: Run experiment
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
         run: |
-          dvc metrics diff --show-md --no-path main 2>&1 | tee diff.txt
-
-      - name: Generate report content
-        id: get-comment-body
-        run: | 
-          body="$(cat diff.txt)"
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}" 
-          echo "::set-output name=body::$body"
-
-      - name: Find comment
-        id: fc
-        uses: peter-evans/find-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-
-      - name: Create report comment
-        if: steps.fc.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ${{ steps.get-comment-body.outputs.body }}
-      
-      - name: Upate report comment
-        if: steps.fc.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          body: |
-            ${{ steps.get-comment-body.outputs.body }}
-          edit-mode: replace
+          dvc pull
+          dvc repro
+          dvc push
