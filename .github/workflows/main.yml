@@ -20,10 +20,11 @@ jobs:
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
           REPO_KEY: ${{ secrets.REPO_TOKEN }}
+          USERNAME: github-actions[bot]
         run: |
           dvc pull
           dvc repro
           dvc push
           git add dvc.lock
-          git commit 'Latest model and data version'
+          git commit -m 'Latest model and data version'
           git push origin
