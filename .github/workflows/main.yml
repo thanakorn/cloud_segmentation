@@ -1,9 +1,6 @@
 name: Main
 
-on:
-  push:
-    branches:
-    - main
+on: workflow_dispatch
 
 jobs:
   reproduce:
@@ -26,5 +23,3 @@ jobs:
           dvc pull
           dvc repro
           dvc push
-          git add dvc.lock
-          git commit -m "Add latest result"
