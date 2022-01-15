@@ -70,7 +70,7 @@ jobs:
             ${{ steps.get-comment-body.outputs.body }}
       
       - name: Upate report comment
-        if: steps.fc.outputs.comment-id == ''
+        if: steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
