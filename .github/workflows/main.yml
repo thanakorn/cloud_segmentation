@@ -16,10 +16,14 @@ jobs:
           cd src
           pip install .
 
-      - name: Run experiment
+      - name: Reproduce and push
         env:
           GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+          REPO_KEY: ${{ secrets.REPO_TOKEN }}
         run: |
           dvc pull
           dvc repro
           dvc push
+          git add dvc.lock
+          git commit 'Latest model and data version'
+          git push origin
