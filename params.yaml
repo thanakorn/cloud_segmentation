@@ -12,5 +12,5 @@ model:
 training:
   batch_size: 16
   n_epochs: 15
-  optimizer: Adam
+  optimizer: SGD
   lr: 0.001
